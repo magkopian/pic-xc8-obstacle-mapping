@@ -28,7 +28,7 @@ void hmc5883l_init(void) {
 
 	WriteI2C(HMC5883L_CRA); // Set register pointer to Config Reg A
 	WriteI2C(0x78); // 8-average, 75 Hz, normal measurement
-	WriteI2C(0xA0); // Gain=5
+	WriteI2C(0xE0); // Gain=5
 	WriteI2C(0x00); // Continuous-measurement mode
 
 	StopI2C();

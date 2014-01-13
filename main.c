@@ -20,6 +20,8 @@
 
 #define _XTAL_FREQ 12000000
 
+double angle;
+
 void main(void) {
 	unsigned char config;
     unsigned int spbrg;
@@ -51,8 +53,7 @@ void main(void) {
 		/*Calculate Angle*/
         char buff[20];
         int x = 0, y = 0, z = 0;
-        double angle;
-
+        
         // Get x and y from HMC5883L
         hmc5883l_read(&x, &y, &z);
 
@@ -62,27 +63,34 @@ void main(void) {
         sprintf(buff, "%f\r\n", angle);
         putsUSART(buff);
 
+		sn754410_test_turn_to();
+		
 		/*Start PWM*/
 		if (DataRdyUSART()) {
 			unsigned char res = ReadUSART();
 			
 			if (res == 0x41) {
-				putrsUSART("MOVE_FORWARD");
-				sn754410_fwd();
+				putrsUSART("0 Deg");
+				sn754410_turn_to(DEG_0);
+
 			}
 			else if (res == 0x42) {
-				putrsUSART("MOVE_REVERSE");
-				sn754410_rev();
+				putrsUSART("90 Deg");
+				sn754410_turn_to(DEG_90);
 			}
 			else if (res == 0x43) {
-				putrsUSART("TURN_LEFT");
-				sn754410_trnl();
+				putrsUSART("180 Deg");
+				sn754410_turn_to(DEG_180);
 			}
 			else if (res == 0x44) {
-				putrsUSART("TURN_RIGHT");
-				sn754410_trnr();
+				putrsUSART("270 Deg");
+				sn754410_turn_to(DEG_270);
 			}
 			else if (res == 0x45) {
+				putrsUSART("Frw");
+				sn754410_fwd();
+			}
+			else if (res == 0x46) {
 				putrsUSART("STOP");
 				sn754410_brk();
 			}

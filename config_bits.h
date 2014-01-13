@@ -24,7 +24,7 @@ extern "C" {
 #pragma config OSCS = OFF       // Oscillator System Clock Switch Enable bit (Oscillator system clock switch option is disabled (main oscillator is source))
 
 // CONFIG2L
-#pragma config PWRT = OFF       // Power-up Timer Enable bit (PWRT disabled)
+#pragma config PWRT = ON       // Power-up Timer Enable bit (PWRT enabled)
 #pragma config BOR = ON         // Brown-out Reset Enable bit (Brown-out Reset enabled)
 #pragma config BORV = 25        // Brown-out Reset Voltage bits (VBOR set to 2.5V)
 

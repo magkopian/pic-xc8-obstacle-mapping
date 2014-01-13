@@ -34,25 +34,43 @@ extern "C" {
 #define MOVE_LEFT 0xF0
 #define MOVE_RIGHT 0x0F
 
+#define DEG_0 2
+#define DEG_90 75
+#define DEG_180 134
+#define DEG_270 220
+
+#define TOLERANCE 3
+#define SSE 0
+
 extern unsigned char last_action;
+extern unsigned int turn_to;
 
 // Initializes SN754410 H-Bridge
-void sn754410_init(void);
+void sn754410_init();
 
 // Make vehicle to move forward
-void sn754410_fwd(void);
+void sn754410_fwd();
 
 // Make vehicle to move backwards
-void sn754410_rev(void);
+void sn754410_rev();
 
 // Make vehicle to turn left
-void sn754410_trnl(void);
+void sn754410_trnl();
 
 // Make vehicle to turn rigth
-void sn754410_trnr(void);
+void sn754410_trnr();
 
 // Make vehicle to break
-void sn754410_brk(void);
+void sn754410_brk();
+
+// Make vehicle to turn a specific angle
+int sn754410_turn_to(unsigned int trn_angle);
+
+// Test turn to angle and correct or stop vehicle
+void sn754410_test_turn_to(void);
+
+// Stop the vehicle if brk_angle has been reached
+int sn754410_break_if(double brk_angle);
 
 #ifdef	__cplusplus
 }
