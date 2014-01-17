@@ -17,6 +17,7 @@
 #include "config_bits.h"
 #include "hmc5883l.h"
 #include "sn754410.h"
+#include "us-020.h"
 
 #define _XTAL_FREQ 12000000
 
@@ -48,6 +49,7 @@ void main(void) {
 
 	hmc5883l_init();
 	sn754410_init();
+	us020_init();
 
 	for (;;) {
 		/*Calculate Angle*/
@@ -60,9 +62,13 @@ void main(void) {
 		// Convert to degrees
         angle = atan2((double) y, (double) x) * (180.0 / 3.14159265) + 180.0;
 
-        sprintf(buff, "%f\r\n", angle);
+        sprintf(buff, "%f;", angle);
         putsUSART(buff);
 
+		sprintf(buff, "%d\r\n", us020_read());
+        putsUSART(buff);
+
+		
 		sn754410_test_turn_to();
 		
 		/*Start PWM*/
