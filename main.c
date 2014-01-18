@@ -51,26 +51,42 @@ void main(void) {
 	sn754410_init();
 	us020_init();
 
+	T0CON = 0b01000110;
+	TMR0L = 0;
+	TMR0H = 0x10;
+	INTCONbits.T0IF = 0;
+	T0CONbits.TMR0ON = 1;
+
 	for (;;) {
-		/*Calculate Angle*/
-        char buff[20];
-        int x = 0, y = 0, z = 0;
-        
-        // Get x and y from HMC5883L
-        hmc5883l_read(&x, &y, &z);
+
+		if (INTCONbits.T0IF) {
+			T0CONbits.TMR0ON = 0;
+			sn754410_test_move_fwd();
+			sn754410_test_turn_to();
+			TMR0L = 0;
+			TMR0H = 0x10;
+			INTCONbits.T0IF = 0;
+			T0CONbits.TMR0ON = 1;
+		}
+
+
+		//int x = 0, y = 0, z = 0;
+		//char buff[20];
+
+		// Get x and y from HMC5883L
+		//hmc5883l_read(&x, &y, &z);
 
 		// Convert to degrees
-        angle = atan2((double) y, (double) x) * (180.0 / 3.14159265) + 180.0;
+		//angle = atan2((double) y, (double) x) * (180.0 / 3.14159265) + 180.0;
 
-        sprintf(buff, "%f;", angle);
-        putsUSART(buff);
 
-		sprintf(buff, "%d\r\n", us020_read());
-        putsUSART(buff);
 
-		
-		sn754410_test_turn_to();
-		
+        //sprintf(buff, "%f\r\n", angle);
+        //putsUSART(buff);
+
+		//sprintf(buff, "%d\r\n", us020_read());
+        //putsUSART(buff);
+
 		/*Start PWM*/
 		if (DataRdyUSART()) {
 			unsigned char res = ReadUSART();

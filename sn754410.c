@@ -151,9 +151,8 @@ void sn754410_test_turn_to(void) {
 	int x = 0, y = 0, z = 0;
 
 	if (last_action == MOVE_LEFT || last_action == MOVE_RIGHT) {
-		EN12 = EN34 = 0;
-		A3 = A4 = 0;
-		__delay_ms(4);
+		//EN12 = EN34 = 0;
+		//A3 = A4 = 0;
 
 		// Get x and y from HMC5883L
 		hmc5883l_read(&x, &y, &z);
@@ -169,6 +168,37 @@ void sn754410_test_turn_to(void) {
 				sn754410_trnr();
 			}
 		}
+	}
+}
+
+void sn754410_test_move_fwd(void) {
+	int x = 0, y = 0, z = 0;
+
+	if (last_action == MOVE_FORWARD) {
+		//EN12 = EN34 = 0;
+		//A3 = A4 = 0;
+
+		// Get x and y from HMC5883L
+		hmc5883l_read(&x, &y, &z);
+
+		// Convert to degrees
+		angle = atan2((double) y, (double) x) * (180.0 / 3.14159265) + 180.0;
+
+
+		if (turn_to == DEG_0 && angle < 180) {
+			sn754410_trnl();
+		}
+		else if (turn_to == DEG_0 && angle > 180) {
+			sn754410_trnr();
+		}
+		else if (angle > turn_to) {
+			sn754410_trnl();
+		}
+		else if (angle < turn_to) {
+			sn754410_trnr();
+		}
+		__delay_ms(2);
+		sn754410_fwd();
 	}
 }
 

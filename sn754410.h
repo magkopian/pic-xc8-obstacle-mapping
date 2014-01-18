@@ -34,7 +34,7 @@ extern "C" {
 #define MOVE_LEFT 0xF0
 #define MOVE_RIGHT 0x0F
 
-#define DEG_0 2
+#define DEG_0 3
 #define DEG_90 75
 #define DEG_180 134
 #define DEG_270 220
@@ -71,6 +71,9 @@ void sn754410_test_turn_to(void);
 
 // Stop the vehicle if brk_angle has been reached
 int sn754410_break_if(double brk_angle);
+
+// Test move forward and correct vehicle
+void sn754410_test_move_fwd(void);
 
 #ifdef	__cplusplus
 }
