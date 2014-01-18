@@ -18,10 +18,10 @@
 
 unsigned char last_action = MOVE_STOP;
 unsigned int turn_to = DEG_0;
+double angle;
+int acnt = 0;
 
-extern double angle;
-
-void sn754410_init() {
+void sn754410_init(void) {
 	TRIS_EN12 = TRIS_EN34 = 0; // Enable control pins are outputs
 	EN12 = EN34 = 0;
 
@@ -38,7 +38,7 @@ void sn754410_init() {
 	SetDCEPWM1(1023); // Set the duty cycle
 }
 
-void sn754410_fwd() {
+void sn754410_fwd(void) {
 	EN12 = EN34 = 1;
 	SetOutputEPWM1(FULL_OUT_FWD, PWM_MODE_1);
 	A3 = 0;
@@ -47,7 +47,7 @@ void sn754410_fwd() {
 	last_action = MOVE_FORWARD;
 }
 
-void sn754410_rev() {
+void sn754410_rev(void) {
 	EN12 = EN34 = 1;
 	SetOutputEPWM1(FULL_OUT_REV, PWM_MODE_1);
 	A4 = 0;
@@ -56,7 +56,7 @@ void sn754410_rev() {
 	last_action = MOVE_REVERSE;
 }
 
-void sn754410_trnl() {
+void sn754410_trnl(void) {
 	EN12 = EN34 = 1;
 	SetOutputEPWM1(FULL_OUT_FWD, PWM_MODE_1);
 	A4 = 0;
@@ -65,7 +65,7 @@ void sn754410_trnl() {
 	last_action = MOVE_LEFT;
 }
 
-void sn754410_trnr() {
+void sn754410_trnr(void) {
 	EN12 = EN34 = 1;
 	SetOutputEPWM1(FULL_OUT_REV, PWM_MODE_1);
 	A3 = 0;
@@ -74,19 +74,19 @@ void sn754410_trnr() {
 	last_action = MOVE_RIGHT;
 }
 
-void sn754410_brk() {
+void sn754410_brk(void) {
 	// Break motors
 	if (last_action == MOVE_FORWARD) {
-		sn754410_rev(angle);
+		sn754410_rev();
 	}
 	else if (last_action == MOVE_REVERSE) {
-		sn754410_fwd(angle);
+		sn754410_fwd();
 	}
 	else if (last_action == MOVE_LEFT) {
-		sn754410_trnr(angle);
+		sn754410_trnr();
 	}
 	else if (last_action == MOVE_RIGHT) {
-		sn754410_trnl(angle);
+		sn754410_trnl();
 	}
 	for (int i = 0; i < 7; ++i) __delay_ms(10);
 
@@ -151,8 +151,8 @@ void sn754410_test_turn_to(void) {
 	int x = 0, y = 0, z = 0;
 
 	if (last_action == MOVE_LEFT || last_action == MOVE_RIGHT) {
-		//EN12 = EN34 = 0;
-		//A3 = A4 = 0;
+		EN12 = EN34 = 0;
+		A3 = A4 = 0;
 
 		// Get x and y from HMC5883L
 		hmc5883l_read(&x, &y, &z);
@@ -166,6 +166,15 @@ void sn754410_test_turn_to(void) {
 			}
 			else if (last_action == MOVE_RIGHT) {
 				sn754410_trnr();
+			}
+		}
+		else {
+			if (acnt < 1) {
+				sn754410_turn_to(turn_to);
+				++acnt;
+			}
+			else {
+				acnt = 0;
 			}
 		}
 	}
@@ -185,10 +194,10 @@ void sn754410_test_move_fwd(void) {
 		angle = atan2((double) y, (double) x) * (180.0 / 3.14159265) + 180.0;
 
 
-		if (turn_to == DEG_0 && angle < 180) {
+		if (turn_to == DEG_0 && angle > turn_to && angle < 180) {
 			sn754410_trnl();
 		}
-		else if (turn_to == DEG_0 && angle > 180) {
+		else if (turn_to == DEG_0 && angle < turn_to || turn_to == DEG_0 && angle > 180) {
 			sn754410_trnr();
 		}
 		else if (angle > turn_to) {
@@ -197,7 +206,7 @@ void sn754410_test_move_fwd(void) {
 		else if (angle < turn_to) {
 			sn754410_trnr();
 		}
-		__delay_ms(2);
+		__delay_ms(7);
 		sn754410_fwd();
 	}
 }
@@ -220,7 +229,7 @@ int sn754410_break_if(double brk_angle) {
 				return 1;
 			}
 
-			if (angle <= brk_angle - TOLERANCE + SSE - 2 && angle >= brk_angle - TOLERANCE + SSE - 80) {
+			if (angle <= brk_angle - TOLERANCE + SSE - 2 && angle >= brk_angle - TOLERANCE + SSE - 80 || (angle >= 180 && brk_angle == DEG_0)) {
 				sn754410_trnr();
 			}
 		}

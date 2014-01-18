@@ -21,7 +21,7 @@
 
 #define _XTAL_FREQ 12000000
 
-double angle;
+extern double angle;
 
 void main(void) {
 	unsigned char config;
@@ -51,22 +51,40 @@ void main(void) {
 	sn754410_init();
 	us020_init();
 
-	T0CON = 0b01000110;
+	// Initialize Timer 0
+	T0CON = 0b01000111; // 8bit, 1:256 prescaler
 	TMR0L = 0;
-	TMR0H = 0x10;
+	TMR0H = 0;
 	INTCONbits.T0IF = 0;
 	T0CONbits.TMR0ON = 1;
 
-	for (;;) {
+	// Initialize Timer 3
+	T3CON = 0b00010000; // 16bit, 1:2 prescaler
+	TMR3L = 0;
+	TMR3H = 0;
+	PIR2bits.TMR3IF = 0;
+	T3CONbits.TMR3ON = 1;
 
+
+	for (;;) {
+		// Check for Timer 0 overflow (5.46ms)
 		if (INTCONbits.T0IF) {
 			T0CONbits.TMR0ON = 0;
-			sn754410_test_move_fwd();
 			sn754410_test_turn_to();
 			TMR0L = 0;
-			TMR0H = 0x10;
+			TMR0H = 0;
 			INTCONbits.T0IF = 0;
 			T0CONbits.TMR0ON = 1;
+		}
+
+		// Check for Timer 3 overflow (174.76ms)
+		if (PIR2bits.TMR3IF) {
+			T3CONbits.TMR3ON = 0;
+			sn754410_test_move_fwd();
+			TMR3L = 0;
+			TMR3H = 0;
+			PIR2bits.TMR3IF = 0;
+			T3CONbits.TMR3ON = 1;
 		}
 
 
@@ -94,7 +112,6 @@ void main(void) {
 			if (res == 0x41) {
 				putrsUSART("0 Deg");
 				sn754410_turn_to(DEG_0);
-
 			}
 			else if (res == 0x42) {
 				putrsUSART("90 Deg");
