@@ -33,35 +33,37 @@ extern "C" {
 #define MOVE_REVERSE 0x99
 #define MOVE_LEFT 0xF0
 #define MOVE_RIGHT 0x0F
+#define MOVE_IDLE 0xAA
 
-#define DEG_0 3
+#define DEG_0 4
 #define DEG_90 75
 #define DEG_180 134
 #define DEG_270 220
 
-#define TOLERANCE 3
+#define TOLERANCE 4
 #define SSE 0
 
 extern unsigned char last_action;
 extern unsigned int turn_to;
+extern double angle;
 
 // Initializes SN754410 H-Bridge
-void sn754410_init();
+void sn754410_init(void);
 
 // Make vehicle to move forward
-void sn754410_fwd();
+void sn754410_fwd(void);
 
 // Make vehicle to move backwards
-void sn754410_rev();
+void sn754410_rev(void);
 
 // Make vehicle to turn left
-void sn754410_trnl();
+void sn754410_trnl(void);
 
 // Make vehicle to turn rigth
-void sn754410_trnr();
+void sn754410_trnr(void);
 
 // Make vehicle to break
-void sn754410_brk();
+void sn754410_brk(void);
 
 // Make vehicle to turn a specific angle
 int sn754410_turn_to(unsigned int trn_angle);
