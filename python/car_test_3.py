@@ -7,7 +7,8 @@ import time
 previus_car_msg = 0
 previus_degrees = 0
 degrees = 0
-i = 0
+previus_obstacle = 0
+default_cm_per_msg = 1
 
 car_str = 'p'
 
@@ -17,14 +18,15 @@ def turn(current_degrees):
 	
 	degrees = 0
 	current_degrees = int(current_degrees)
+	m = abs(current_degrees - previous_degrees)
 	if (current_degrees == 0 and previus_degrees == 270):
-		degrees = 90
+		degrees = m
 	elif (current_degrees == 270 and previus_degrees == 0):
-		degrees = -90
+		degrees = -m
 	elif current_degrees > previus_degrees:
-		degrees = 90
+		degrees = m
 	elif current_degrees < previus_degrees:
-		degrees = -90
+		degrees = -m
 	print(degrees)
 	if degrees==0:
 		time.sleep(0.001)
@@ -42,7 +44,8 @@ def turn(current_degrees):
 #moves the car
 def fw(car_msg):
 	global previus_car_msg
-	global i
+	global default_cm_per_msg
+	
 	car_msg.remove('p')
 	car_msg.remove('f')
 	car_msg.remove(';')
@@ -52,25 +55,32 @@ def fw(car_msg):
 	move = cur - previus_car_msg
 	
 	if move==0:
-		i=i+1
-		if i==3:
-			obstacle(cur)
-			previus_car_msg = 0
+		time.sleep(0.001)
 	elif move<0:
 		time.sleep(0.001)
+	elif cur > 104:
+		car.forward(default_cm_per_msg)
 	else:
 		car.forward(move)
-		i=0
 	print(previus_car_msg , cur)
 	previus_car_msg = cur
 	
 
 #clears the space until the obstacle and returns to the previous point
 def obstacle(cm):
-	car.speed(8)
-	car.forward(cm) 
-	car.backward(cm) 
-	car.speed(1)
+	global previus_obstacle
+	
+	if previus_obstacle == 0:
+		car.speed(8)
+		car.forward(cm) 
+		car.backward(cm) 
+		car.speed(1) 
+		s2 = "obstacle"
+		print(s2)
+	else:
+		s3 = "same"
+		print(s3)
+	previus_obstacle = 1
 	
 ser = serial.Serial(port='COM10', baudrate=9600)
 print('Connected to: ' + ser.portstr)
@@ -88,6 +98,10 @@ car.color("white","red")
 car.pensize(car_width)
 car.speed(1)
 #car.left(-90)#first position
+
+#ser.write("S\r\n") 
+time.sleep(2)
+
 
 while True: 
 	try:
@@ -114,15 +128,23 @@ while True:
 				car_str = ''.join(car_msg)
 				previus_car_msg = int(car_str)
 				print(car_msg)
-		elif  (car_msg[1] == 't'):
-				car_msg.remove('p')
-				car_msg.remove('t')
-				car_msg.remove('u')
-				car_msg.remove('r')
-				car_msg.remove('n')
-				car_msg.remove('_')
-				car_str2 = ''.join(car_msg)
-				turn(car_str2)
+		elif (car_msg[1] == 'o'):
+			car_msg.remove('p')
+			car_msg.remove('o')
+			car_msg.remove('b')
+			car_msg.remove(';')
+			car_str3 = ''.join(car_msg)
+			mov = int(car_str3)
+			obstacle(mov)
+		elif (car_msg[1] == 't'):
+			car_msg.remove('p')
+			car_msg.remove('t')
+			car_msg.remove('u')
+			car_msg.remove('r')
+			car_msg.remove('n')
+			car_msg.remove('_')
+			car_str2 = ''.join(car_msg)
+			turn(car_str2)
 		else:
 			str = "it was nothing.\n"
 			print(str)
