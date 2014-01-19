@@ -21,7 +21,23 @@
 
 #define _XTAL_FREQ 12000000
 
+#define STEP_IDLE 0x00
+#define STEP_CALIB 0x33
+#define STEP_SEARCH 0x99
+#define STEP_FOUND_OBS 0x77
+#define STEP_TURN 0xAA
+
+#define ROUTE_0 0x00
+#define ROUTE_90 0x33
+#define ROUTE_180 0xDD
+#define ROUTE_270 0xF0
+
 extern double angle;
+extern unsigned char last_action;
+
+int distance = 9999;
+unsigned int step = STEP_IDLE;
+unsigned int route = ROUTE_0;
 
 void main(void) {
 	unsigned char config;
@@ -87,23 +103,49 @@ void main(void) {
 			T3CONbits.TMR3ON = 1;
 		}
 
+		char buff[20];
 
-		//int x = 0, y = 0, z = 0;
-		//char buff[20];
+		if ( ( distance = us020_read() ) <= 12 && last_action == MOVE_FORWARD ) {
+			sn754410_brk();
+			putrsUSART("ob;");
+			step = STEP_FOUND_OBS;
+		}
 
-		// Get x and y from HMC5883L
-		//hmc5883l_read(&x, &y, &z);
-
-		// Convert to degrees
-		//angle = atan2((double) y, (double) x) * (180.0 / 3.14159265) + 180.0;
-
-
-
-        //sprintf(buff, "%f\r\n", angle);
+		//sprintf(buff, "%f;", angle);
         //putsUSART(buff);
 
-		//sprintf(buff, "%d\r\n", us020_read());
-        //putsUSART(buff);
+		sprintf(buff, "%d\r\n", distance);
+        putsUSART(buff);
+
+		if ((step == STEP_CALIB || step == STEP_TURN) && last_action == MOVE_STOP) {
+			sn754410_fwd();
+			step = STEP_SEARCH;
+		}
+		else if (step == STEP_FOUND_OBS && route == ROUTE_0) {
+			sn754410_turn_to(DEG_90);
+			putrsUSART("turn_90\r\n");
+			step = STEP_TURN;
+			route = ROUTE_90;
+		}
+		else if (step == STEP_FOUND_OBS && route == ROUTE_90) {
+			sn754410_turn_to(DEG_180);
+			putrsUSART("turn_180\r\n");
+			step = STEP_TURN;
+			route = ROUTE_180;
+		}
+		else if (step == STEP_FOUND_OBS && route == ROUTE_180) {
+			sn754410_turn_to(DEG_270);
+			putrsUSART("turn_270\r\n");
+			step = STEP_TURN;
+			route = ROUTE_270;
+		}
+		else if (step == STEP_FOUND_OBS && route == ROUTE_270) {
+			sn754410_turn_to(DEG_0);
+			putrsUSART("turn_0\r\n");
+			step = STEP_TURN;
+			route = ROUTE_0;
+		}
+
 
 		/*Start PWM*/
 		if (DataRdyUSART()) {
@@ -132,6 +174,12 @@ void main(void) {
 			else if (res == 0x46) {
 				putrsUSART("STOP");
 				sn754410_brk();
+			}
+			else if (res == 0x47) {
+				putrsUSART("CALIB");
+				sn754410_turn_to(DEG_0);
+				step = STEP_CALIB;
+				route = ROUTE_0;
 			}
 			else {
 				putrsUSART("INVALID");

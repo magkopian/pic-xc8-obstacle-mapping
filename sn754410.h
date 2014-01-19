@@ -33,6 +33,7 @@ extern "C" {
 #define MOVE_REVERSE 0x99
 #define MOVE_LEFT 0xF0
 #define MOVE_RIGHT 0x0F
+#define MOVE_IDLE 0xAA
 
 #define DEG_0 4
 #define DEG_90 75

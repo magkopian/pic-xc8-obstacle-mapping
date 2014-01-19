@@ -16,7 +16,7 @@
 
 #define _XTAL_FREQ 12000000
 
-unsigned char last_action = MOVE_STOP;
+unsigned char last_action = MOVE_IDLE;
 unsigned int turn_to = DEG_0;
 double angle;
 int acnt = 0;
