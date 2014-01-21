@@ -52,6 +52,7 @@ def fw(car_msg):
 	global previus_car_msg
 	global default_cm_per_msg
 	
+	s15 = "move : "
 	car_msg.remove('p')
 	car_msg.remove('f')
 	car_msg.remove('w')
@@ -60,26 +61,30 @@ def fw(car_msg):
 	cur = int(car_str1)
 	move = previus_car_msg - cur 
 	
-	if move==0:
+	if move == 0:
 		time.sleep(0.00001)
 	elif (cur > 105 and previus_car_msg > 105):
 		car.forward(default_cm_per_msg)
-		previus_car_msg = cur
 		s6 = "default cm per msg"
-		print(s6)
+		print(s6, s15)
 	elif move < 0:
+		car.forward(default_cm_per_msg)
 		time.sleep(0.00001)
+		print(s15)
 	elif move > 10:
-		previus_car_msg = cur
+		car.forward(default_cm_per_msg)
 		s10 = " wrong input"
 		print(s10)
+		print(s15)
 	else:
 		car.forward(move)
-		previus_car_msg = cur
+		print(s15)
+		
 	s8 = "previus : "
 	s9 = "current : "
-	s9 = "move : "
-	print(s8, previus_car_msg, s9, cur ,)
+	
+	print(s8, previus_car_msg, s9, cur , s15, move) 
+	previus_car_msg = cur
 	
 	
 
