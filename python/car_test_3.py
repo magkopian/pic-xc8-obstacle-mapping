@@ -10,7 +10,8 @@ degrees = 0
 previus_obstacle = 0
 default_cm_per_msg = 1
 width_flag = 1
-j = 0	#number of obstacles
+#j = 0	#number of obstacles
+#g = 0	#number of elements
 
 car_str = 'p'
 
@@ -61,8 +62,9 @@ def fw(car_msg):
 	
 	if move==0:
 		time.sleep(0.00001)
-	elif cur > 105:
+	elif (cur > 105 and pre > 105):
 		car.forward(default_cm_per_msg)
+		previus_car_msg = cur
 		s6 = "default cm per msg"
 		print(s6)
 	elif move < 0:
@@ -72,11 +74,12 @@ def fw(car_msg):
 		print(s10)
 	else:
 		car.forward(move)
+		previus_car_msg = cur
 	s8 = "previus : "
 	s9 = "current : "
 	s9 = "move : "
 	print(s8, previus_car_msg, s9, cur ,)
-	previus_car_msg = cur
+	
 	
 
 #clears the space until the obstacle and returns to the previous point
@@ -158,9 +161,12 @@ while True:
 		
 		if (car_msg[1]=='f'):
 			previus_obstacle = 0
+			#g = g + 1
 			if previus_car_msg > 0:
+				#if (g == 4):
 				print(car_msg)
 				fw(car_msg)
+					#g = 0
 			else:
 				car_msg.remove('p')
 				car_msg.remove('f')
