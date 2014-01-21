@@ -58,7 +58,7 @@ def fw(car_msg):
 	car_msg.remove(';')
 	car_str1 = ''.join(car_msg)
 	cur = int(car_str1)
-	move = cur - previus_car_msg
+	move = previus_car_msg - cur 
 	
 	if move==0:
 		time.sleep(0.00001)
@@ -70,6 +70,7 @@ def fw(car_msg):
 	elif move < 0:
 		time.sleep(0.00001)
 	elif move > 10:
+		previus_car_msg = cur
 		s10 = " wrong input"
 		print(s10)
 	else:
