@@ -91,9 +91,10 @@ def obstacle(cm):
 		car.speed(8)
 		car.forward(cm) 
 		car.color("red","red")
-		car.forward(1)
+		car.forward(5)
 		car.color("white","red")
-		car.backward(cm+1) 
+		c = cm +5
+		car.backward(c) 
 		car.speed(1) 
 		previus_car_msg = 0
 		s2 = "obstacle"
