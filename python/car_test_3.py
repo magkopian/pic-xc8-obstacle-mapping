@@ -16,6 +16,7 @@ car_str = 'p'
 #turns the car
 def turn(current_degrees):	
 	global previus_degrees
+	global width flag
 	
 	degrees = 0
 	current_degrees = int(current_degrees)
@@ -86,11 +87,13 @@ def obstacle(cm):
 	previus_obstacle = 1
 	
 def width():
+	global width flag
 	
+	width_flag = 0
 	car.forward(car_width)
 	s5 = "forward width"
 	print(s5)
-	width_flag = 0
+	
 	
 	
 	
@@ -128,12 +131,12 @@ while True:
 		car_msg = line.decode('utf-8')
 		car_msg = list(car_msg)
 		car_msg[0] = car_msg[0].replace('\x00','p');
-		print(type(car_msg))
+		#print(type(car_msg))
 		
 		car_msg.remove('\r')
 		car_msg.remove('\n')
 
-		print(car_msg)
+		#print(car_msg)
 		
 		if (car_msg[1]=='f'):
 			previus_obstacle = 0
@@ -174,6 +177,7 @@ while True:
 			#car_msg.remove('h')
 			if (width_flag == 1):
 				width()
+				print(car_msg)
 		else:
 			str = "it was nothing.\n"
 			print(str)
