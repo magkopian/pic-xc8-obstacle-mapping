@@ -16,7 +16,7 @@ car_str = 'p'
 #turns the car
 def turn(current_degrees):	
 	global previus_degrees
-	global width flag
+	global width_flag
 	
 	degrees = 0
 	current_degrees = int(current_degrees)
