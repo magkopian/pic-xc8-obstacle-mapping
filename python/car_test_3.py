@@ -30,7 +30,7 @@ def turn(current_degrees):
 		degrees = -m
 	print(degrees)
 	if degrees==0:
-		time.sleep(0.001)
+		time.sleep(0.00001)
 		s2 = "straight"
 		print(s2)
 	else:
@@ -56,9 +56,9 @@ def fw(car_msg):
 	move = cur - previus_car_msg
 	
 	if move==0:
-		time.sleep(0.001)
+		time.sleep(0.00001)
 	elif move < 0:
-		time.sleep(0.001)
+		time.sleep(0.00001)
 	elif cur > 105:
 		car.forward(default_cm_per_msg)
 	else:
@@ -103,7 +103,7 @@ car.left(90)#first position
 #print(bytes('S', encoding='ascii'))
 time.sleep(0.4)
 ser.write(bytes('S', encoding='ascii'))
-time.sleep(0.1)
+#time.sleep(0.1)
 
 	
 
@@ -157,7 +157,7 @@ while True:
 			str = "it was nothing.\n"
 			print(str)
 			
-		time.sleep(0.4)
+		#time.sleep(0.4)
 	except KeyboardInterrupt:
 		ser.close()
 		break
