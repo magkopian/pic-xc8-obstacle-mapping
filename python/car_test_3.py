@@ -10,6 +10,7 @@ degrees = 0
 previus_obstacle = 0
 default_cm_per_msg = 1
 width_flag = 1
+j = 0	#number of obstacles
 
 car_str = 'p'
 
@@ -60,6 +61,8 @@ def fw(car_msg):
 	
 	if move==0:
 		time.sleep(0.00001)
+	elif move < 0:
+		time.sleep(0.00001)
 	elif cur > 105:
 		car.forward(default_cm_per_msg)
 		s6 = "default cm per msg"
@@ -77,6 +80,9 @@ def fw(car_msg):
 def obstacle(cm):
 	global previus_obstacle
 	global previus_car_msg
+	global j
+	
+	j= j + 1
 	
 	if previus_obstacle == 0:
 		car.speed(8)
@@ -89,6 +95,9 @@ def obstacle(cm):
 	else:
 		s3 = "same"
 		print(s3)
+	if (j == 7):
+		ser.write(bytes('F', encoding='ascii'))
+		#time.sleep(0.1)
 	previus_obstacle = 1
 	
 def width():
@@ -98,9 +107,6 @@ def width():
 	car.forward(car_width)
 	s5 = "forward width"
 	print(s5)
-	
-	
-	
 	
 	
 ser = serial.Serial(port='COM10', baudrate=9600)
