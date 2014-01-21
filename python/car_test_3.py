@@ -66,7 +66,10 @@ def fw(car_msg):
 		print(s6)
 	else:
 		car.forward(move)
-	#print(previus_car_msg , cur)
+	s8 = "previus : "
+	s9 = "current : "
+	s9 = "move : "
+	print(s8, previus_car_msg, s9, cur ,)
 	previus_car_msg = cur
 	
 
@@ -141,6 +144,7 @@ while True:
 		if (car_msg[1]=='f'):
 			previus_obstacle = 0
 			if previus_car_msg > 0:
+				print(car_msg)
 				fw(car_msg)
 			else:
 				car_msg.remove('p')
