@@ -38,7 +38,7 @@ def turn(current_degrees):
 	else:
 		car.right(degrees)
 		#car.forward(car_width)	#automato forward oso einai to paxos tou autokinhtou
-		car_width = 1
+		width_flag = 1
 		s3 = "turn"
 		print(s3)
 
