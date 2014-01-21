@@ -170,7 +170,7 @@ while True:
 			#car_msg.remove('d')
 			#car_msg.remove('t')
 			#car_msg.remove('h')
-			if (width_flag = 1):
+			if (width_flag == 1):
 				width()
 		else:
 			str = "it was nothing.\n"
