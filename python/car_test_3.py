@@ -60,10 +60,10 @@ def fw(car_msg):
 	
 	if move==0:
 		time.sleep(0.00001)
-	elif move < 0:
-		time.sleep(0.00001)
 	elif cur > 105:
 		car.forward(default_cm_per_msg)
+		s6 = "default cm per msg"
+		print(s6)
 	else:
 		car.forward(move)
 	#print(previus_car_msg , cur)
