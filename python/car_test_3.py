@@ -76,12 +76,14 @@ def fw(car_msg):
 #clears the space until the obstacle and returns to the previous point
 def obstacle(cm):
 	global previus_obstacle
+	global previus_car_msg
 	
 	if previus_obstacle == 0:
 		car.speed(8)
 		car.forward(cm) 
 		car.backward(cm) 
 		car.speed(1) 
+		previus_car_msg = 0
 		s2 = "obstacle"
 		print(s2)
 	else:
@@ -112,7 +114,7 @@ wn.bgcolor("gray")
 
 car_width = 5
 car.color("gray","gray")
-car.setposition(-328,-270)
+#car.setposition(-328,-270)
 car.color("white","red")
 car.pensize(car_width)
 car.speed(1)
