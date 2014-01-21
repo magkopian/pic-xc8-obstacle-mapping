@@ -90,7 +90,10 @@ def obstacle(cm):
 	if previus_obstacle == 0:
 		car.speed(8)
 		car.forward(cm) 
-		car.backward(cm) 
+		car.color("red","red")
+		car.forward(1)
+		car.color("white","red")
+		car.backward(cm+1) 
 		car.speed(1) 
 		previus_car_msg = 0
 		s2 = "obstacle"
