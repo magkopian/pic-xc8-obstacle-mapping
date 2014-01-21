@@ -87,7 +87,7 @@ def obstacle(cm):
 	previus_obstacle = 1
 	
 def width():
-	global width flag
+	global width_flag
 	
 	width_flag = 0
 	car.forward(car_width)
