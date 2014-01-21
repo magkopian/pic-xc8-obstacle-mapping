@@ -62,7 +62,7 @@ def fw(car_msg):
 	
 	if move==0:
 		time.sleep(0.00001)
-	elif (cur > 105 and pre > 105):
+	elif (cur > 105 and previus_car_msg > 105):
 		car.forward(default_cm_per_msg)
 		previus_car_msg = cur
 		s6 = "default cm per msg"
