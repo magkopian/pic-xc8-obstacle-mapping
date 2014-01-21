@@ -67,6 +67,9 @@ def fw(car_msg):
 		car.forward(default_cm_per_msg)
 		s6 = "default cm per msg"
 		print(s6)
+	elif move > 2:
+		s10 = " wrong input"
+		print(s10)
 	else:
 		car.forward(move)
 	s8 = "previus : "
@@ -127,10 +130,10 @@ car.speed(1)
 car.left(90)#first position
 
 #print(bytes('S', encoding='ascii'))
-time.sleep(0.4)
+#time.sleep(0.4)
 ser.write(bytes('S', encoding='ascii'))
 #time.sleep(0.1)
-
+#ser.write(bytes('F', encoding='ascii'))
 	
 
 previus_degrees = 0
