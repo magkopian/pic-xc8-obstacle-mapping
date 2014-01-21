@@ -67,7 +67,7 @@ def fw(car_msg):
 		print(s6)
 	elif move < 0:
 		time.sleep(0.00001)
-	elif move > 2:
+	elif move > 10:
 		s10 = " wrong input"
 		print(s10)
 	else:
@@ -85,16 +85,16 @@ def obstacle(cm):
 	global previus_car_msg
 	global j
 	
-	j= j + 1
+	#j= j + 1
 	
 	if previus_obstacle == 0:
 		car.speed(8)
 		car.forward(cm) 
-		car.color("red","red")
-		car.forward(5)
-		car.color("white","red")
-		c = cm +5
-		car.backward(c) 
+		#car.color("red","red")
+		#car.forward(5)
+		#car.color("white","red")
+		#c = cm +5
+		car.backward(cm) 
 		car.speed(1) 
 		previus_car_msg = 0
 		s2 = "obstacle"
@@ -102,8 +102,8 @@ def obstacle(cm):
 	else:
 		s3 = "same"
 		print(s3)
-	if (j == 7):
-		ser.write(bytes('F', encoding='ascii'))
+	#if (j == 7):
+	#	ser.write(bytes('F', encoding='ascii'))
 		#time.sleep(0.1)
 	previus_obstacle = 1
 	
