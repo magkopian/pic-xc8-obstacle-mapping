@@ -18,11 +18,12 @@ def turn(current_degrees):
 	
 	degrees = 0
 	current_degrees = int(current_degrees)
-	m = abs(current_degrees - previous_degrees)
+	m = abs(current_degrees - previus_degrees)
+	
 	if (current_degrees == 0 and previus_degrees == 270):
-		degrees = m
+		degrees = 90
 	elif (current_degrees == 270 and previus_degrees == 0):
-		degrees = -m
+		degrees = -90
 	elif current_degrees > previus_degrees:
 		degrees = m
 	elif current_degrees < previus_degrees:
@@ -48,17 +49,17 @@ def fw(car_msg):
 	
 	car_msg.remove('p')
 	car_msg.remove('f')
-	car_msg.remove(';')
 	car_msg.remove('w')
+	car_msg.remove(';')
 	car_str1 = ''.join(car_msg)
 	cur = int(car_str1)
 	move = cur - previus_car_msg
 	
 	if move==0:
 		time.sleep(0.001)
-	elif move<0:
+	elif move < 0:
 		time.sleep(0.001)
-	elif cur > 104:
+	elif cur > 105:
 		car.forward(default_cm_per_msg)
 	else:
 		car.forward(move)
@@ -97,15 +98,20 @@ car.setposition(-328,-270)
 car.color("white","red")
 car.pensize(car_width)
 car.speed(1)
-#car.left(-90)#first position
+car.left(90)#first position
 
-#ser.write("S\r\n") 
-time.sleep(2)
+#print(bytes('S', encoding='ascii'))
+time.sleep(0.4)
+ser.write(bytes('S', encoding='ascii'))
+time.sleep(0.1)
 
+	
+
+previus_degrees = 0
 
 while True: 
 	try:
-		time.sleep(0.4)
+		
 		line = ser.readline()
 		car_msg = line.decode('utf-8')
 		car_msg = list(car_msg)
@@ -117,18 +123,19 @@ while True:
 
 		print(car_msg)
 		
-		if car_msg[1]=='f':
+		if (car_msg[1]=='f'):
+			previus_obstacle = 0
 			if previus_car_msg > 0:
 				fw(car_msg)
 			else:
 				car_msg.remove('p')
 				car_msg.remove('f')
-				car_msg.remove(';')
 				car_msg.remove('w')
+				car_msg.remove(';')
 				car_str = ''.join(car_msg)
 				previus_car_msg = int(car_str)
 				print(car_msg)
-		elif (car_msg[1] == 'o'):
+		elif (car_msg[2] == 'b'):
 			car_msg.remove('p')
 			car_msg.remove('o')
 			car_msg.remove('b')
@@ -137,6 +144,7 @@ while True:
 			mov = int(car_str3)
 			obstacle(mov)
 		elif (car_msg[1] == 't'):
+			previus_obstacle = 0
 			car_msg.remove('p')
 			car_msg.remove('t')
 			car_msg.remove('u')
@@ -149,7 +157,7 @@ while True:
 			str = "it was nothing.\n"
 			print(str)
 			
-		
+		time.sleep(0.4)
 	except KeyboardInterrupt:
 		ser.close()
 		break
