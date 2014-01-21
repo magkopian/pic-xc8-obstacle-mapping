@@ -26,6 +26,8 @@
 #define STEP_SEARCH 0x99
 #define STEP_FOUND_OBS 0x77
 #define STEP_TURN 0xAA
+#define STEP_FOWARD_WIDTH 0x85
+#define STEP_FOUND_OBS_ON_W 0xDD
 
 #define ROUTE_0 0x00
 #define ROUTE_90 0x33
@@ -38,6 +40,9 @@ extern unsigned char last_action;
 int distance = 9999;
 unsigned int step = STEP_IDLE;
 unsigned int route = ROUTE_0;
+unsigned char turn_0_or_180 = 1;
+unsigned char obs_turn_cnt = 0;
+unsigned char f_w_cnt = 0;
 
 void main(void) {
 	unsigned char config;
@@ -97,6 +102,10 @@ void main(void) {
 		if (PIR2bits.TMR3IF) {
 			T3CONbits.TMR3ON = 0;
 			sn754410_test_move_fwd();
+			if (step == STEP_FOWARD_WIDTH && last_action == MOVE_FORWARD && f_w_cnt++ > 5) {
+				sn754410_brk();
+				f_w_cnt = 0;
+			}
 			TMR3L = 0;
 			TMR3H = 0;
 			PIR2bits.TMR3IF = 0;
@@ -105,10 +114,15 @@ void main(void) {
 
 		char buff[20];
 
-		if ( ( distance = us020_read() ) <= 12 && last_action == MOVE_FORWARD ) {
+		if ( ( distance = us020_read() ) <= 12 && step == STEP_SEARCH && last_action == MOVE_FORWARD ) {
 			sn754410_brk();
 			putrsUSART("ob;");
 			step = STEP_FOUND_OBS;
+		}
+		else if ( distance <= 13 && step == STEP_FOWARD_WIDTH && last_action == MOVE_FORWARD ) {
+			sn754410_brk();
+			putrsUSART("ob;");
+			step = STEP_FOUND_OBS_ON_W;
 		}
 
 		//sprintf(buff, "%f;", angle);
@@ -117,33 +131,64 @@ void main(void) {
 		sprintf(buff, "%d\r\n", distance);
         putsUSART(buff);
 
-		if ((step == STEP_CALIB || step == STEP_TURN) && last_action == MOVE_STOP) {
+		if ( (step == STEP_CALIB || (step == STEP_TURN && (route == ROUTE_0 || route == ROUTE_180) ) ) && last_action == MOVE_STOP ) {
 			sn754410_fwd();
 			step = STEP_SEARCH;
 		}
-		else if (step == STEP_FOUND_OBS && route == ROUTE_0) {
-			sn754410_turn_to(DEG_90);
-			putrsUSART("turn_90\r\n");
-			step = STEP_TURN;
-			route = ROUTE_90;
+		else if ((step == STEP_TURN && route == ROUTE_90) && last_action == MOVE_STOP) {
+			sn754410_fwd();
+			step = STEP_FOWARD_WIDTH;
 		}
-		else if (step == STEP_FOUND_OBS && route == ROUTE_90) {
-			sn754410_turn_to(DEG_180);
-			putrsUSART("turn_180\r\n");
-			step = STEP_TURN;
-			route = ROUTE_180;
-		}
-		else if (step == STEP_FOUND_OBS && route == ROUTE_180) {
-			sn754410_turn_to(DEG_270);
-			putrsUSART("turn_270\r\n");
-			step = STEP_TURN;
-			route = ROUTE_270;
-		}
-		else if (step == STEP_FOUND_OBS && route == ROUTE_270) {
+		else if ((step == STEP_FOWARD_WIDTH && turn_0_or_180) && last_action == MOVE_STOP) {
 			sn754410_turn_to(DEG_0);
 			putrsUSART("turn_0\r\n");
 			step = STEP_TURN;
 			route = ROUTE_0;
+			turn_0_or_180 = 0;
+		}
+		else if ((step == STEP_FOWARD_WIDTH && !turn_0_or_180) && last_action == MOVE_STOP) {
+			sn754410_turn_to(DEG_180);
+			putrsUSART("turn_180\r\n");
+			step = STEP_TURN;
+			route = ROUTE_180;
+			turn_0_or_180 = 1;
+		}
+		else if (step == STEP_FOUND_OBS && (obs_turn_cnt == 0 || obs_turn_cnt == 3)) {
+			sn754410_turn_to(DEG_90);
+			putrsUSART("turn_90\r\n");
+			step = STEP_TURN;
+			route = ROUTE_90;
+			++obs_turn_cnt;
+		}
+		else if (step == STEP_FOUND_OBS && (obs_turn_cnt == 2  || obs_turn_cnt == 4)) {
+			sn754410_turn_to(DEG_180);
+			putrsUSART("turn_180\r\n");
+			step = STEP_TURN;
+			route = ROUTE_180;
+			++obs_turn_cnt;
+		}
+		else if (step == STEP_FOUND_OBS && (obs_turn_cnt == 1 || obs_turn_cnt == 5)) {
+			sn754410_turn_to(DEG_0);
+			putrsUSART("turn_0\r\n");
+			step = STEP_TURN;
+			route = ROUTE_0;
+			if (++obs_turn_cnt > 5) obs_turn_cnt = 0;
+		}
+		else if (step == STEP_FOUND_OBS_ON_W && obs_turn_cnt == 1) {
+			sn754410_turn_to(DEG_180);
+			putrsUSART("turn_180\r\n");
+			step = STEP_TURN;
+			route = ROUTE_180;
+			obs_turn_cnt = 3;
+			turn_0_or_180 = 1;
+		}
+		else if (step == STEP_FOUND_OBS_ON_W && obs_turn_cnt == 4) {
+			sn754410_turn_to(DEG_0);
+			putrsUSART("turn_0\r\n");
+			step = STEP_TURN;
+			route = ROUTE_0;
+			obs_turn_cnt = 0;
+			turn_0_or_180 = 0;
 		}
 
 
@@ -175,7 +220,7 @@ void main(void) {
 				putrsUSART("STOP");
 				sn754410_brk();
 			}
-			else if (res == 0x47) {
+			else if (res == 0x53) {
 				putrsUSART("CALIB");
 				sn754410_turn_to(DEG_0);
 				step = STEP_CALIB;
