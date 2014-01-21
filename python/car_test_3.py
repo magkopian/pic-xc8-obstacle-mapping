@@ -9,6 +9,7 @@ previus_degrees = 0
 degrees = 0
 previus_obstacle = 0
 default_cm_per_msg = 1
+width_flag = 0
 
 car_str = 'p'
 
@@ -30,12 +31,13 @@ def turn(current_degrees):
 		degrees = -m
 	print(degrees)
 	if degrees==0:
-		time.sleep(0.00001)
+		#time.sleep(0.00001)
 		s2 = "straight"
 		print(s2)
 	else:
 		car.right(degrees)
-		car.forward(car_width)	#automato forward oso einai to paxos tou autokinhtou
+		#car.forward(car_width)	#automato forward oso einai to paxos tou autokinhtou
+		car_width = 1
 		s3 = "turn"
 		print(s3)
 
@@ -82,6 +84,14 @@ def obstacle(cm):
 		s3 = "same"
 		print(s3)
 	previus_obstacle = 1
+	
+def width():
+	
+	car.forward(car_width)
+	width_flag = 0
+	
+	
+	
 	
 ser = serial.Serial(port='COM10', baudrate=9600)
 print('Connected to: ' + ser.portstr)
@@ -153,6 +163,15 @@ while True:
 			car_msg.remove('_')
 			car_str2 = ''.join(car_msg)
 			turn(car_str2)
+		elif (car_msg[1] == 'w'):
+			#car_msg.remove('p')
+			#car_msg.remove('w')
+			#car_msg.remove('i')
+			#car_msg.remove('d')
+			#car_msg.remove('t')
+			#car_msg.remove('h')
+			if (width_flag = 1):
+				width()
 		else:
 			str = "it was nothing.\n"
 			print(str)
@@ -161,3 +180,4 @@ while True:
 	except KeyboardInterrupt:
 		ser.close()
 		break
+car.mainloop()
