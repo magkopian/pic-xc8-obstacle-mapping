@@ -9,7 +9,7 @@ previus_degrees = 0
 degrees = 0
 previus_obstacle = 0
 default_cm_per_msg = 1
-width_flag = 0
+width_flag = 1
 
 car_str = 'p'
 
@@ -65,7 +65,7 @@ def fw(car_msg):
 		car.forward(default_cm_per_msg)
 	else:
 		car.forward(move)
-	print(previus_car_msg , cur)
+	#print(previus_car_msg , cur)
 	previus_car_msg = cur
 	
 
@@ -88,6 +88,8 @@ def obstacle(cm):
 def width():
 	
 	car.forward(car_width)
+	s5 = "forward width"
+	print(s5)
 	width_flag = 0
 	
 	
@@ -144,7 +146,7 @@ while True:
 				car_msg.remove(';')
 				car_str = ''.join(car_msg)
 				previus_car_msg = int(car_str)
-				print(car_msg)
+				#print(car_msg)
 		elif (car_msg[2] == 'b'):
 			car_msg.remove('p')
 			car_msg.remove('o')
