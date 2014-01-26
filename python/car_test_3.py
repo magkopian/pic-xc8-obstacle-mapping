@@ -34,7 +34,6 @@ def turn(current_degrees):
 		degrees = -m
 	print(degrees)
 	if degrees==0:
-		#time.sleep(0.00001)
 		s2 = "straight"
 		print(s2)
 	else:
@@ -63,16 +62,16 @@ def fw(car_msg):
 	
 	if move == 0:
 		time.sleep(0.00001)
-	elif (cur > 105 and previus_car_msg > 105):
+	elif (cur > 75 and previus_car_msg > 75):
 		car.forward(default_cm_per_msg)
 		s6 = "default cm per msg"
 		print(s6, s15)
 	elif move < 0:
-		car.forward(default_cm_per_msg)
+		#car.forward(default_cm_per_msg)
 		time.sleep(0.00001)
 		print(s15)
 	elif move > 10:
-		car.forward(default_cm_per_msg)
+		#car.forward(default_cm_per_msg)
 		s10 = " wrong input"
 		print(s10)
 		print(s15)
@@ -99,11 +98,11 @@ def obstacle(cm):
 	if previus_obstacle == 0:
 		car.speed(8)
 		car.forward(cm) 
-		#car.color("red","red")
-		#car.forward(5)
-		#car.color("white","red")
-		#c = cm +5
-		car.backward(cm) 
+		car.color("red","red")
+		car.forward(2)
+		car.backward(2)
+		car.color("white","red")
+		car.backward(cm)
 		car.speed(1) 
 		previus_car_msg = 0
 		s2 = "obstacle"
@@ -134,7 +133,7 @@ car = turtle.Turtle()
 wn.title("Room mapping")
 wn.bgcolor("gray")
 
-car_width = 5
+car_width = 8
 car.color("gray","gray")
 #car.setposition(-328,-270)
 car.color("white","red")
