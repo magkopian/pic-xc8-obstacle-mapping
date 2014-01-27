@@ -99,13 +99,13 @@ def obstacle(cm):
 		car.speed(8)
 		car.forward(cm) 
 		car.color("red","red")
-		car.forward(2)
-		car.backward(2)
+		car.forward(5)
+		car.backward(5)
 		car.color("white","red")
 		car.backward(cm)
 		car.speed(1) 
 		previus_car_msg = 0
-		s2 = "obstacle"
+		s2 = "obstacle" 
 		print(s2)
 	else:
 		s3 = "same"
@@ -133,7 +133,7 @@ car = turtle.Turtle()
 wn.title("Room mapping")
 wn.bgcolor("gray")
 
-car_width = 8
+car_width = 10
 car.color("gray","gray")
 #car.setposition(-328,-270)
 car.color("white","red")
@@ -209,7 +209,7 @@ while True:
 				width()
 				print(car_msg)
 		else:
-			str = "it was nothing.\n"
+			str = "Invalid input."
 			print(str)
 			
 		#time.sleep(0.4)
