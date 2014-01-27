@@ -37,7 +37,9 @@
 extern double angle;
 extern unsigned char last_action;
 
-int distance = 9999;
+long unsigned int distance1 = 9999;
+long unsigned int distance2 = 9999;
+
 unsigned int step = STEP_IDLE;
 unsigned int route = ROUTE_0;
 unsigned char turn_0_or_180 = 1;
@@ -86,7 +88,6 @@ void main(void) {
 	PIR2bits.TMR3IF = 0;
 	T3CONbits.TMR3ON = 1;
 
-
 	for (;;) {
 		// Check for Timer 0 overflow (5.46ms)
 		if (INTCONbits.T0IF) {
@@ -101,11 +102,13 @@ void main(void) {
 		// Check for Timer 3 overflow (174.76ms)
 		if (PIR2bits.TMR3IF) {
 			T3CONbits.TMR3ON = 0;
+
 			sn754410_test_move_fwd();
-			if (step == STEP_FOWARD_WIDTH && last_action == MOVE_FORWARD && f_w_cnt++ > 5) {
+			if (step == STEP_FOWARD_WIDTH && last_action == MOVE_FORWARD && f_w_cnt++ > 7) { // 174.76ms * 6 = 1048.56ms
 				sn754410_brk();
 				f_w_cnt = 0;
 			}
+
 			TMR3L = 0;
 			TMR3H = 0;
 			PIR2bits.TMR3IF = 0;
@@ -114,22 +117,42 @@ void main(void) {
 
 		char buff[20];
 
-		if ( ( distance = us020_read() ) <= 12 && step == STEP_SEARCH && last_action == MOVE_FORWARD ) {
+		if ( ( (distance1 = us020_read_1()) <= 12 || (distance1 = us020_read_2()) <= 12 ) && step == STEP_SEARCH && last_action == MOVE_FORWARD ) {
 			sn754410_brk();
-			putrsUSART("ob;");
+			if (distance1 < distance2) {
+				sprintf(buff, "ob;%d\r\n", distance1);
+			}
+			else {
+				sprintf(buff, "ob;%d\r\n", distance2);
+			}
+			putsUSART(buff);
 			step = STEP_FOUND_OBS;
 		}
-		else if ( distance <= 13 && step == STEP_FOWARD_WIDTH && last_action == MOVE_FORWARD ) {
+		else if ( ( distance1 <= 13 || distance2 <= 13 ) && step == STEP_FOWARD_WIDTH && last_action == MOVE_FORWARD ) {
 			sn754410_brk();
-			putrsUSART("ob;");
+			if (distance1 < distance2) {
+				sprintf(buff, "ob;%d\r\n", distance1);
+			}
+			else {
+				sprintf(buff, "ob;%d\r\n", distance2);
+			}
+			putsUSART(buff);
 			step = STEP_FOUND_OBS_ON_W;
 		}
-
-		//sprintf(buff, "%f;", angle);
-        //putsUSART(buff);
-
-		sprintf(buff, "%d\r\n", distance);
-        putsUSART(buff);
+		else {
+			if (step == STEP_FOWARD_WIDTH) {
+				putrsUSART("width\r\n");
+			}
+			else if (step == STEP_SEARCH) {
+				if (distance1 < distance2) {
+					sprintf(buff, "fw;%d\r\n", distance1);
+				}
+				else {
+					sprintf(buff, "fw;%d\r\n", distance2);
+				}
+				putsUSART(buff);
+			}
+		}
 
 		if ( (step == STEP_CALIB || (step == STEP_TURN && (route == ROUTE_0 || route == ROUTE_180) ) ) && last_action == MOVE_STOP ) {
 			sn754410_fwd();

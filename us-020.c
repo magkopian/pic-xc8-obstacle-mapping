@@ -11,16 +11,22 @@
 #include <math.h>
 #include "us-020.h"
 
+#define _XTAL_FREQ 12000000
+
 void us020_init (void) {
 	TRIS_ECHO = 1;
+	TRIS_ECHO2 = 1;
+	
 	TRIS_TRIGGER = 0;
 	TRIGGER = 0;
+	TRIS_TRIGGER2 = 0;
+	TRIGGER2 = 0;
 
 	CCP1CON = 0b00000101; // Capture mode, every rising edge
 	T1CON = 0b00011000; // 1:2 Prescale
 }
 
-int us020_read (void) {
+/*int us020_read (void) {
 	int INCAPResult;
 	float distance;
 
@@ -47,5 +53,89 @@ int us020_read (void) {
 		distance = 50 - ((50 - distance) * 0.649);
 	}
 
-	return (int) round(distance);
+	return (int) round(abs(distance - 2));
+}*/
+
+long unsigned int us020_read_1 (void) {
+	unsigned long int time = 0;
+	unsigned int ovf = 0;
+
+
+	while(1) {
+		if(ECHO == 0) {
+			break;
+		}
+	}
+
+	TRIGGER = 1;
+	__delay_us(10);
+	TRIGGER = 0;
+
+	while(1) {
+        if(ECHO == 1)
+        {
+            TMR1H = 0; //Reset Timer1
+			TMR1L = 0;
+			PIR1bits.TMR1IF = 0;
+			T1CONbits.TMR1ON = 1; // Start Timer1
+            while(1)
+            {
+				if (PIR1bits.TMR1IF == 1) {
+					++ovf;
+				}
+                if(ECHO == 0){
+					time |= (unsigned int) ovf;
+					time <<= 16;
+                    time = (unsigned int) TMR1H; // Read high byte
+					time <<= 8;
+					time |= (unsigned int) TMR1L; // Read low byte
+
+                    return (long unsigned int) round(time / 87.0 - 2);
+                }
+            }
+        }
+    }
+	return 0;
+}
+
+long unsigned int us020_read_2 (void) {
+	unsigned long int time = 0;
+	unsigned int ovf = 0;
+
+
+	while(1) {
+		if(ECHO2 == 0) {
+			break;
+		}
+	}
+
+	TRIGGER2 = 1;
+	__delay_us(10);
+	TRIGGER2 = 0;
+
+	while(1) {
+        if(ECHO2 == 1)
+        {
+            TMR1H = 0; //Reset Timer1
+			TMR1L = 0;
+			PIR1bits.TMR1IF = 0;
+			T1CONbits.TMR1ON = 1; // Start Timer1
+            while(1)
+            {
+				if (PIR1bits.TMR1IF == 1) {
+					++ovf;
+				}
+                if(ECHO2 == 0){
+					time |= (unsigned int) ovf;
+					time <<= 16;
+                    time = (unsigned int) TMR1H; // Read high byte
+					time <<= 8;
+					time |= (unsigned int) TMR1L; // Read low byte
+
+                    return (long unsigned int) round(time / 87.0 - 2);
+                }
+            }
+        }
+    }
+	return 0;
 }

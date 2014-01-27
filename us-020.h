@@ -14,11 +14,17 @@ extern "C" {
 
 #define TRIGGER PORTBbits.RB2
 #define TRIS_TRIGGER TRISB2
+#define TRIGGER2 PORTBbits.RB4
+#define TRIS_TRIGGER2 TRISB4
+
 #define ECHO PORTCbits.RC2
 #define TRIS_ECHO TRISC2
+#define ECHO2 PORTBbits.RB5
+#define TRIS_ECHO2 TRISB5
 
 void us020_init (void);
-int us020_read (void);
+long unsigned int us020_read_1 (void);
+long unsigned int us020_read_2 (void);
     
 #ifdef	__cplusplus
 }
