@@ -105,7 +105,7 @@ def obstacle(cm):
 		car.backward(cm)
 		car.speed(1) 
 		previus_car_msg = 0
-		s2 = "obstacle"
+		s2 = "obstacle" 
 		print(s2)
 	else:
 		s3 = "same"
@@ -209,7 +209,7 @@ while True:
 				width()
 				print(car_msg)
 		else:
-			str = "it was nothing.\n"
+			str = "Invalid input."
 			print(str)
 			
 		#time.sleep(0.4)
