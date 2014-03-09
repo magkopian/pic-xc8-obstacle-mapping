@@ -1,9 +1,7 @@
-/* 
- * File:   sn754410.h
- * Author: Manolis Agkopian
- *
- * Created on 2 Ιανουάριος 2014, 8:32 μμ
- */
+/*
+* Copyright (c) 2014 Manolis Agkopian
+* See the file LICENCE for copying permission.
+*/
 
 #ifndef SN754410_H
 #define	SN754410_H

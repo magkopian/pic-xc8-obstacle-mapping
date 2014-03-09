@@ -1,3 +1,8 @@
+#
+# Copyright (c) 2014 Yiannis Chaldeos
+# See the file LICENCE for copying permission.
+#
+
 #Program for obstacles mapping
 
 import serial

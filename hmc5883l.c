@@ -1,9 +1,7 @@
 /*
- * File:   hmc5883l.c
- * Author: Manolis Agkopian
- *
- * Created on 12 Δεκέμβριος 2013, 6:28 μμ
- */
+* Copyright (c) 2014 Manolis Agkopian
+* See the file LICENCE for copying permission.
+*/
 
 #include <xc.h>
 #include <plib/i2c.h>

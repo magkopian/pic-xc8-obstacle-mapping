@@ -1,9 +1,7 @@
-/* 
- * File:   us-020.h
- * Author: Manolis Agkopian
- *
- * Created on 17 Ιανουάριος 2014, 1:30 πμ
- */
+/*
+* Copyright (c) 2014 Manolis Agkopian
+* See the file LICENCE for copying permission.
+*/
 
 #ifndef US_020_H
 #define	US_020_H

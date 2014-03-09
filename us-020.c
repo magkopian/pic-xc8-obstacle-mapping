@@ -1,9 +1,7 @@
-/* 
- * File:   us-020.c
- * Author: Manolis Agkopian
- *
- * Created on 17 Ιανουάριος 2014, 1:30 πμ
- */
+/*
+* Copyright (c) 2014 Manolis Agkopian
+* See the file LICENCE for copying permission.
+*/
 
 #include <xc.h>
 #include <stdio.h>

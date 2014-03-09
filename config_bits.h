@@ -1,9 +1,7 @@
-/* 
- * File:   config_bits.h
- * Author: Manolis Agkopian
- *
- * Created on 18 Δεκέμβριος 2013, 3:43 μμ
- */
+/*
+* Copyright (c) 2014 Manolis Agkopian
+* See the file LICENCE for copying permission.
+*/
 
 #ifndef CONFIG_BITS_H
 #define	CONFIG_BITS_H

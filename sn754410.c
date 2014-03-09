@@ -1,10 +1,7 @@
-/* 
- * File:   sn754410.c
- * Author: Manolis Agkopian
- *
- * Created on 2 Ιανουάριος 2014, 8:33 μμ
- */
-
+/*
+* Copyright (c) 2014 Manolis Agkopian
+* See the file LICENCE for copying permission.
+*/
 #include <xc.h>
 #include <math.h>
 #include <plib/pwm.h>

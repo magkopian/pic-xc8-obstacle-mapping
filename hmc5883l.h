@@ -1,9 +1,7 @@
-/* 
- * File:   hmc5883l.h
- * Author: Manolis Agkopian
- *
- * Created on 12 Δεκέμβριος 2013, 6:23 μμ
- */
+/*
+* Copyright (c) 2014 Manolis Agkopian
+* See the file LICENCE for copying permission.
+*/
 
 #ifndef HMC5883L_H
 #define	HMC5883L_H
